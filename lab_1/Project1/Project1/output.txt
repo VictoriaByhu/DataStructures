@@ -1,0 +1,6 @@
+Execution time for n=20: 3.5
+Memory used for n=20: 320
+Execution time for n=100: 2.201
+Memory used for n=100: 1600
+Execution time for n=1000: 2.084
+Memory used for n=1000: 16000

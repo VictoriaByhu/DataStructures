@@ -17,20 +17,21 @@ int naiveSearch(const string& text, const string& pattern) {
 }
 
 // Префікс-функція для Кнута-Морріса-Пратта
-vector<int> prefixFunction(const string& pattern) {
+vector<int> prefixFunction(const string& pattern) 
+{
     int m = pattern.length();
-    vector<int> lps(m, 0);
-    int len = 0;
+    vector<int> vector(m, 0);
+    int j = 0;
     for (int i = 1; i < m; ) {
-        if (pattern[i] == pattern[len]) {
-            lps[i++] = ++len;
+        if (pattern[i] == pattern[j]) {
+            vector[i++] = ++j;
         }
         else {
-            if (len != 0) len = lps[len - 1];
-            else lps[i++] = 0;
+            if (j != 0) j = vector[j - 1];
+            else vector[i++] = 0;
         }
     }
-    return lps;
+    return vector;
 }
 
 // KMP алгоритм

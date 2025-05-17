@@ -5,7 +5,6 @@
 
 using namespace std;
 
-// Прямий пошук (Naive) O((n-m + 1) * m)
 int naiveSearch(const string& text, const string& pattern) {
     int n = text.length(), m = pattern.length();
     for (int i = 0; i <= n - m; ++i) {
@@ -16,7 +15,7 @@ int naiveSearch(const string& text, const string& pattern) {
     return -1;
 }
 
-// Префікс-функція для Кнута-Морріса-Пратта
+
 vector<int> prefixFunction(const string& pattern) 
 {
     int m = pattern.length();
@@ -34,7 +33,7 @@ vector<int> prefixFunction(const string& pattern)
     return vector;
 }
 
-// KMP алгоритм
+
 int KMPSearch(const string& text, const string& pattern) {
     int n = text.length(), m = pattern.length();
     vector<int> lps = prefixFunction(pattern);
@@ -52,7 +51,7 @@ int KMPSearch(const string& text, const string& pattern) {
     return -1;
 }
 
-// Алгоритм Бойєра-Мура (bad character heuristic)
+
 int badCharBM(const string& text, const string& pattern) {
     const int ALPHABET = 256;
     int badChar[ALPHABET];
@@ -77,7 +76,7 @@ int badCharBM(const string& text, const string& pattern) {
 }
 
 int main() {
-    ifstream file("C:\\Users\\User\\Desktop\\uni\\data structures and algorithms\\lab_17\\task_3\\text.txt");
+    ifstream file("C:\\Users\\User\\Desktop\\DataStructures\\lab_17\\task_3\\text.txt");
     if (!file.is_open()) {
         cout << "Error.\n";
         return 1;

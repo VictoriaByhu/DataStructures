@@ -1,45 +1,75 @@
-#include <iostream>
+п»ї#include <iostream>
 #include <fstream>
 #include <string>
-#include <cctype>
-#include <map>
 using namespace std;
 
-// Функція шифрування/дешифрування Цезаря
-string caesarCipher(const string& text, int shift, bool decrypt = false) {
-    string result = "";
-    if (decrypt) shift = -shift;
+// Р—РЅР°С…РѕРґРёРјРѕ РЅР°Р№С‡Р°СЃС‚С–С€Сѓ Р±СѓРєРІСѓ
+int findMostFrequentShift(const string& text) {
+    int freq[26] = { 0 };
 
-    for (char c : text) {
+    for (int i = 0; i < text.length(); ++i) {
+        char c = text[i];
         if (isalpha(c)) {
-            char base = isupper(c) ? 'A' : 'a';
-            c = (c - base + shift + 26) % 26 + base;
+            if (isupper(c)) {
+                freq[c - 'A']++;
+            }
+            else {
+                freq[c - 'a']++;
+            }
         }
-        result += c;
-    }
-    return result;
-}
-
-// Частотний аналіз
-int frequencyDecrypt(const string& cipherText) {
-    map<char, int> freq;
-    for (char c : cipherText) {
-        if (isalpha(c)) freq[tolower(c)]++;
     }
 
-    // Найчастіше вживана літера в англ мові — 'e'
-    char mostFrequent = max_element(freq.begin(), freq.end(),
-        [](auto& a, auto& b) { return a.second < b.second; })->first;
+    int maxIndex = 0;
+    for (int i = 1; i < 26; ++i) {
+        if (freq[i] > freq[maxIndex]) {
+            maxIndex = i;
+        }
+    }
 
-    int shift = (mostFrequent - 'e' + 26) % 26;
+    // РќР°Р№С‡Р°СЃС‚С–С€Р° Р±СѓРєРІР° в†’ РІРІР°Р¶Р°С”РјРѕ, С‰Рѕ РІРѕРЅР° РІС–РґРїРѕРІС–РґР°С” 'e'
+    int shift = (maxIndex - ('e' - 'a') + 26) % 26;
     return shift;
 }
 
+// РћСЃРЅРѕРІРЅР° С„СѓРЅРєС†С–СЏ С€РёС„СЂСѓРІР°РЅРЅСЏ Р°Р±Рѕ РґРµС€РёС„СЂСѓРІР°РЅРЅСЏ
+string caesarCipher(const string& text, int shift, bool decrypt) {
+    string result = "";
+
+    if (decrypt == true) {
+        shift = -shift;
+    }
+
+    for (int i = 0; i < text.length(); ++i) {
+        char c = text[i];
+
+        if (isalpha(c)) {
+            char base;
+            if (isupper(c)) {
+                base = 'A';
+            }
+            else {
+                base = 'a';
+            }
+
+            int offset = c - base;
+            int shifted = (offset + shift + 26) % 26;
+            char newChar = base + shifted;
+            result += newChar;
+        }
+        else {
+            result += c;
+        }
+    }
+
+    return result;
+}
+
+// Р—С‡РёС‚СѓРІР°РЅРЅСЏ С‚РµРєСЃС‚Сѓ
 string readText(bool fromFile) {
     string text;
-    if (fromFile) {
+    if (fromFile == true) {
         string filename;
-        cout << "Введіть ім'я файлу: ";
+        cout << "Р’РІРµРґС–С‚СЊ РЅР°Р·РІСѓ С„Р°Р№Р»Сѓ: ";
         cin >> filename;
         ifstream inFile(filename);
         if (inFile) {
@@ -47,11 +77,11 @@ string readText(bool fromFile) {
             inFile.close();
         }
         else {
-            cout << "Не вдалося відкрити файл.\n";
+            cout << "РќРµ РІРґР°Р»РѕСЃСЏ РІС–РґРєСЂРёС‚Рё С„Р°Р№Р».\n";
         }
     }
     else {
-        cout << "Введіть текст: ";
+        cout << "Р’РІРµРґС–С‚СЊ С‚РµРєСЃС‚: ";
         cin.ignore();
         getline(cin, text);
     }
@@ -60,33 +90,40 @@ string readText(bool fromFile) {
 
 int main() {
     int mode;
-    cout << "1 - Шифрування\n2 - Дешифрування (зсув)\n3 - Дешифрування (частотний метод)\nВаш вибір: ";
+    cout << "1 - РЁРёС„СЂСѓРІР°РЅРЅСЏ\n2 - Р”РµС€РёС„СЂСѓРІР°РЅРЅСЏ (Р·СЃСѓРІ)\n3 - Р”РµС€РёС„СЂСѓРІР°РЅРЅСЏ (С‡Р°СЃС‚РѕС‚РЅРёР№ РјРµС‚РѕРґ)\nР’Р°С€ РІРёР±С–СЂ: ";
     cin >> mode;
 
     bool fromFile;
-    cout << "Зчитати текст з файлу? (1 - так, 0 - ні): ";
+    cout << "Р—С‡РёС‚Р°С‚Рё С‚РµРєСЃС‚ Р· С„Р°Р№Р»Сѓ? (1 - С‚Р°Рє, 0 - РЅС–): ";
     cin >> fromFile;
+
     string text = readText(fromFile);
 
     if (mode == 1) {
         int shift;
-        cout << "Введіть крок зсуву (може бути від’ємним): ";
+        cout << "Р’РІРµРґС–С‚СЊ Р·СЃСѓРІ: ";
         cin >> shift;
-        cout << "Зашифрований текст: " << caesarCipher(text, shift) << endl;
+        string result = caesarCipher(text, shift, false);
+        cout << "Р—Р°С€РёС„СЂРѕРІР°РЅРёР№ С‚РµРєСЃС‚:\n" << result << endl;
+
     }
     else if (mode == 2) {
         int shift;
-        cout << "Введіть крок зсуву для дешифрування: ";
+        cout << "Р’РІРµРґС–С‚СЊ Р·СЃСѓРІ: ";
         cin >> shift;
-        cout << "Дешифрований текст: " << caesarCipher(text, shift, true) << endl;
+        string result = caesarCipher(text, shift, true);
+        cout << "Р РѕР·С€РёС„СЂРѕРІР°РЅРёР№ С‚РµРєСЃС‚:\n" << result << endl;
+
     }
     else if (mode == 3) {
-        int shift = frequencyDecrypt(text);
-        cout << "Знайдений зсув: " << shift << endl;
-        cout << "Дешифрований текст: " << caesarCipher(text, shift, true) << endl;
+        int shift = findMostFrequentShift(text);
+        cout << "Р—РЅР°Р№РґРµРЅРёР№ Р·СЃСѓРІ: " << shift << endl;
+        string result = caesarCipher(text, shift, true);
+        cout << "Р РѕР·С€РёС„СЂРѕРІР°РЅРёР№ С‚РµРєСЃС‚:\n" << result << endl;
+
     }
     else {
-        cout << "Невірний режим.\n";
+        cout << "РќРµРІС–СЂРЅРёР№ РІРёР±С–СЂ СЂРµР¶РёРјСѓ." << endl;
     }
 
     return 0;

@@ -3,34 +3,6 @@
 #include <string>
 using namespace std;
 
-// Знаходимо найчастішу букву
-int findMostFrequentShift(const string& text) {
-    int freq[26] = { 0 };
-
-    for (int i = 0; i < text.length(); ++i) {
-        char c = text[i];
-        if (isalpha(c)) {
-            if (isupper(c)) {
-                freq[c - 'A']++;
-            }
-            else {
-                freq[c - 'a']++;
-            }
-        }
-    }
-
-    int maxIndex = 0;
-    for (int i = 1; i < 26; ++i) {
-        if (freq[i] > freq[maxIndex]) {
-            maxIndex = i;
-        }
-    }
-
-    // Найчастіша буква → вважаємо, що вона відповідає 'e'
-    int shift = (maxIndex - ('e' - 'a') + 26) % 26;
-    return shift;
-}
-
 // Основна функція шифрування або дешифрування
 string caesarCipher(const string& text, int shift, bool decrypt) {
     string result = "";
@@ -65,65 +37,57 @@ string caesarCipher(const string& text, int shift, bool decrypt) {
 }
 
 // Зчитування тексту
-string readText(bool fromFile) {
-    string text;
-    if (fromFile == true) {
-        string filename;
-        cout << "Введіть назву файлу: ";
-        cin >> filename;
-        ifstream inFile(filename);
-        if (inFile) {
-            getline(inFile, text, '\0');
-            inFile.close();
-        }
-        else {
-            cout << "Не вдалося відкрити файл.\n";
-        }
+string readTextFromFile(const string& filename) {
+    ifstream file(filename);
+    string line, result;
+    while (getline(file, line)) {
+        result += line + " ";
     }
-    else {
-        cout << "Введіть текст: ";
-        cin.ignore();
-        getline(cin, text);
-    }
-    return text;
+    return result;
 }
 
 int main() {
     int mode;
-    cout << "1 - Шифрування\n2 - Дешифрування (зсув)\n3 - Дешифрування (частотний метод)\nВаш вибір: ";
+    cout << "1 - Encrypt\n2 - Descrypt\nChoose: ";
     cin >> mode;
+    
+    int choice;
+    string text;
+    cout << "Input source:\n1. Manual\n2. File (text.txt)\nChoose: ";
+    cin >> choice;
+    cin.ignore();
 
-    bool fromFile;
-    cout << "Зчитати текст з файлу? (1 - так, 0 - ні): ";
-    cin >> fromFile;
-
-    string text = readText(fromFile);
+    if (choice == 1) {
+        cout << "Enter text: ";
+        getline(cin, text);
+    }
+    else if (choice == 2) {
+        text = readTextFromFile("C:\\Users\\User\\Desktop\\uni\\data structures and algorithms\\lab_18,19\\task_1\\text.txt");
+        cout << "Read from file: " << text << endl;
+    }
+    else {
+        cout << "Invalid input source.\n";
+        return 1;
+    }
 
     if (mode == 1) {
         int shift;
-        cout << "Введіть зсув: ";
+        cout << "Enter the offset: ";
         cin >> shift;
         string result = caesarCipher(text, shift, false);
-        cout << "Зашифрований текст:\n" << result << endl;
+        cout << "Ciphertext:\n" << result << endl;
 
     }
     else if (mode == 2) {
         int shift;
-        cout << "Введіть зсув: ";
+        cout << "Enter the offset: ";
         cin >> shift;
         string result = caesarCipher(text, shift, true);
-        cout << "Розшифрований текст:\n" << result << endl;
-
-    }
-    else if (mode == 3) {
-        int shift = findMostFrequentShift(text);
-        cout << "Знайдений зсув: " << shift << endl;
-        string result = caesarCipher(text, shift, true);
-        cout << "Розшифрований текст:\n" << result << endl;
+        cout << "Decrypted text:\n" << result << endl;
 
     }
     else {
-        cout << "Невірний вибір режиму." << endl;
+        cout << "Wrong input.\n";
     }
 
     return 0;

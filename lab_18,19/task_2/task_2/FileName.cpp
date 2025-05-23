@@ -3,29 +3,28 @@
 #include <string>
 using namespace std;
 
-// Звичайний алфавіт
+
 const string alphabet = "abcdefghijklmnopqrstuvwxyz";
 
-// Ключ для заміни (має бути тієї ж довжини!)
 const string substitutionKey = "qwertyuiopasdfghjklzxcvbnm";
 
-// Функція для пошуку індексу символа в алфавіті
+
 int findIndex(char c, const string& reference) {
     for (int i = 0; i < reference.length(); ++i) {
         if (reference[i] == c) {
             return i;
         }
     }
-    return -1; // Не знайдено
+    return -1;
 }
 
-// Шифрування або дешифрування
+
 string substituteText(const string& text, bool decrypt) {
     string result = "";
     for (int i = 0; i < text.length(); ++i) {
         char c = text[i];
 
-        // Переводимо в нижній регістр
+       
         char lowerC = tolower(c);
         bool isUpper = false;
         if (isupper(c)) {
@@ -63,40 +62,39 @@ string substituteText(const string& text, bool decrypt) {
     return result;
 }
 
-// Зчитування тексту
-string readText(bool fromFile) {
-    string text;
-    if (fromFile) {
-        string filename;
-        cout << "Введіть назву файлу: ";
-        cin >> filename;
-        ifstream inFile(filename);
-        if (inFile) {
-            getline(inFile, text, '\0');
-            inFile.close();
-        }
-        else {
-            cout << "Не вдалося відкрити файл." << endl;
-        }
+string readTextFromFile(const string& filename) {
+    ifstream file(filename);
+    string line, result;
+    while (getline(file, line)) {
+        result += line + " ";
     }
-    else {
-        cout << "Введіть текст: ";
-        cin.ignore();
-        getline(cin, text);
-    }
-    return text;
+    return result;
 }
 
 int main() {
     int mode;
-    cout << "1 - Шифрування\n2 - Дешифрування\nВаш вибір: ";
+    cout << "1 - Encrypt\n2 - Descrypt\nChoose: ";
     cin >> mode;
 
-    bool fromFile;
-    cout << "Зчитати текст з файлу? (1 - так, 0 - ні): ";
-    cin >> fromFile;
+    int choice;
+    string text;
+    cout << "Input source:\n1. Manual\n2. File (text.txt)\nChoose: ";
+    cin >> choice;
+    cin.ignore();
 
-    string text = readText(fromFile);
+    if (choice == 1) {
+        cout << "Enter text: ";
+        getline(cin, text);
+    }
+    else if (choice == 2) {
+        text = readTextFromFile("C:\\Users\\User\\Desktop\\uni\\data structures and algorithms\\lab_18,19\\task_2\\text.txt");
+        cout << "Read from file: " << text << endl;
+    }
+    else {
+        cout << "Invalid input source.\n";
+        return 1;
+    }
+
     bool decrypt = false;
     if (mode == 2) {
         decrypt = true;
@@ -105,10 +103,10 @@ int main() {
     string result = substituteText(text, decrypt);
 
     if (decrypt == true) {
-        cout << "Розшифрований текст:\n";
+        cout << "Decrypted text:\n";
     }
     else {
-        cout << "Зашифрований текст:\n";
+        cout << "Encrypted text:\n";
     }
 
     cout << result << endl;

@@ -5,9 +5,11 @@
 
 using namespace std;
 
-int naiveSearch(const string& text, const string& pattern) {
+int naiveSearch(const string& text, const string& pattern) 
+{
     int n = text.length(), m = pattern.length();
-    for (int i = 0; i <= n - m; ++i) {
+    for (int i = 0; i <= n - m; ++i) 
+    {
         int j = 0;
         while (j < m && text[i + j] == pattern[j]) ++j;
         if (j == m) return i;
@@ -21,11 +23,14 @@ vector<int> prefixFunction(const string& pattern)
     int m = pattern.length();
     vector<int> vector(m, 0);
     int j = 0;
-    for (int i = 1; i < m; ) {
-        if (pattern[i] == pattern[j]) {
+    for (int i = 1; i < m; ) 
+    {
+        if (pattern[i] == pattern[j]) 
+        {
             vector[i++] = ++j;
         }
-        else {
+        else 
+        {
             if (j != 0) j = vector[j - 1];
             else vector[i++] = 0;
         }
@@ -34,16 +39,19 @@ vector<int> prefixFunction(const string& pattern)
 }
 
 
-int KMPSearch(const string& text, const string& pattern) {
+int KMPSearch(const string& text, const string& pattern) 
+{
     int n = text.length(), m = pattern.length();
     vector<int> lps = prefixFunction(pattern);
     int i = 0, j = 0;
     while (i < n) {
-        if (text[i] == pattern[j]) {
+        if (text[i] == pattern[j]) 
+        {
             ++i; ++j;
         }
         if (j == m) return i - j;
-        else if (i < n && text[i] != pattern[j]) {
+        else if (i < n && text[i] != pattern[j]) 
+        {
             if (j != 0) j = lps[j - 1];
             else ++i;
         }
@@ -52,7 +60,8 @@ int KMPSearch(const string& text, const string& pattern) {
 }
 
 
-int badCharBM(const string& text, const string& pattern) {
+int badCharBM(const string& text, const string& pattern) 
+{
     const int ALPHABET = 256;
     int badChar[ALPHABET];
     int n = text.size(), m = pattern.size();
@@ -63,7 +72,8 @@ int badCharBM(const string& text, const string& pattern) {
         badChar[(unsigned char)pattern[i]] = i;
 
     int shift = 0;
-    while (shift <= (n - m)) {
+    while (shift <= (n - m)) 
+    {
         int j = m - 1;
         while (j >= 0 && pattern[j] == text[shift + j])
             j--;
@@ -75,15 +85,18 @@ int badCharBM(const string& text, const string& pattern) {
     return -1;
 }
 
-int main() {
+int main() 
+{
     ifstream file("C:\\Users\\User\\Desktop\\DataStructures\\lab_17\\task_3\\text.txt");
-    if (!file.is_open()) {
+    if (!file.is_open()) 
+    {
         cout << "Error.\n";
         return 1;
     }
 
     string text, line;
-    while (getline(file, line)) {
+    while (getline(file, line)) 
+    {
         text += line + " ";
     }
     file.close();
